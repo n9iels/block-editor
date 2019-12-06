@@ -1,7 +1,7 @@
 {
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint/eslint-plugin"
     ],
     "env": {
         "browser": true
@@ -21,17 +21,23 @@
         "plugin:jest/recommended",
         "plugin:react/recommended"
     ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
     "rules": {
+        "react/jsx-uses-react": "warn",
+        "react/jsx-uses-vars": "warn",
         "semi": [
             "warn",
             "always"
         ],
         "quotes": [
-            "warn",
+            "error",
             "double"
         ],
         "eol-last": "warn",
-        "react/jsx-uses-react": "warn",
-        "react/jsx-uses-vars": "warn"
+        "@typescript-eslint/explicit-function-return-type": "off"
     }
 }

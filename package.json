@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build-dev": "parcel ./demo/index.html",
-    "test": "npx jest"
+    "test": "npx jest",
+    "linter": "npx eslint 'src/**'"
   },
   "author": "Niels van der Veer",
   "license": "MIT",

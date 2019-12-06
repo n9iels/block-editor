@@ -1,11 +1,11 @@
 import * as React from "react";
 
 interface ContentEditableProps {
-    disabled?: boolean
-    html?: string
-    onBlur?: () => void
-    onFocus?: () => void
-    onInput: (value: string) => void
+    disabled?: boolean;
+    html?: string;
+    onBlur?: () => void;
+    onFocus?: () => void;
+    onInput: (value: string) => void;
 }
 
 interface ContentEditableState { html: string }
