@@ -1,0 +1,17 @@
+.tooltip {
+    position: absolute;
+    border-radius: 0.2rem;
+    background-color: $tooltip-background-color;
+    color: invert($tooltip-background-color);
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -0.5rem;
+        border-top: 0.5rem solid $tooltip-background-color;
+        border-left: 0.5rem solid transparent;
+        border-right: 0.5rem solid transparent;
+    }
+}

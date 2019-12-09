@@ -57,11 +57,11 @@ export class ContentEditable extends React.Component<ContentEditableProps, Conte
             this.setState({ selection: null }, () => this.props.onSelectStop && this.props.onSelectStop());
         }
 
-        if (selection.type === "Range" && range && range.startOffset !== range.endOffset) {
+        if (selection.type === "Range" && range && range.startOffset <= range.endOffset) {
             const selectedText = selection.toString();
-            const rangeclientRect = range.getClientRects().item(0);
+            const clientRects = range.getClientRects();
 
-            this.setState({ selection: selection }, () => this.props.onSelect && this.props.onSelect(selectedText, rangeclientRect));
+            this.setState({ selection: selection }, () => this.props.onSelect && this.props.onSelect(selectedText, clientRects.item(0)));
         }
     }
 
