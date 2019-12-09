@@ -11,6 +11,7 @@ exports[`contenteditable should perform initial setup 1`] = `
   onBlur={[Function]}
   onFocus={[Function]}
   onInput={[Function]}
+  onSelect={[Function]}
   suppressContentEditableWarning={true}
 />
 `;
