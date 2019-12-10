@@ -1,10 +1,10 @@
 import * as React from "react";
 
-interface TooltipProps {
+export interface TooltipProps {
     position: ClientRect;
 }
 
-interface TooltipState {
+export interface TooltipState {
     tooltipWidth: number;
     left: number;
     top: number;
@@ -22,15 +22,15 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
         this.setState({ tooltipWidth: this.tooltipElement.getBoundingClientRect().width });
     }
 
-    isActive(command: string) {
-        document.queryCommandValue(command);
-    }
-
     static getDerivedStateFromProps(props: TooltipProps, state: TooltipState) {
         const left = props.position.left + (props.position.width / 2) - (state.tooltipWidth / 2);
         const top = props.position.top - props.position.height - (props.position.height / 2);
 
         return { left, top };
+    }
+
+    isActive(command: string) {
+        document.queryCommandValue(command);
     }
 
     render() {
