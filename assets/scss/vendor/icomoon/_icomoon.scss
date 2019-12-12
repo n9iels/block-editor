@@ -1,0 +1,57 @@
+@font-face {
+  font-family: '#{$icomoon-font-family}';
+  src:
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?e08a3t') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?e08a3t') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?e08a3t##{$icomoon-font-family}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: '#{$icomoon-font-family}' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-link {
+  &:before {
+    content: $icon-link; 
+  }
+}
+.icon-plus {
+  &:before {
+    content: $icon-plus; 
+  }
+}
+.icon-bold {
+  &:before {
+    content: $icon-bold; 
+  }
+}
+.icon-underline {
+  &:before {
+    content: $icon-underline; 
+  }
+}
+.icon-italic {
+  &:before {
+    content: $icon-italic; 
+  }
+}
+.icon-strikethrough {
+  &:before {
+    content: $icon-strikethrough; 
+  }
+}
+

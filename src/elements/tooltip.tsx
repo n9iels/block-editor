@@ -6,6 +6,7 @@ export interface TooltipProps {
 
 export interface TooltipState {
     tooltipWidth: number;
+    tooltipHeight: number;
     left: number;
     top: number;
 }
@@ -15,16 +16,18 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
 
     constructor(props: TooltipProps) {
         super(props);
-        this.state = { tooltipWidth: 0, left: 0, top: 0 };
+        this.state = { tooltipWidth: 0, tooltipHeight: 0, left: 0, top: 0 };
     }
 
     componentDidMount() {
-        this.setState({ tooltipWidth: this.tooltipElement.getBoundingClientRect().width });
+        const tooltipRect = this.tooltipElement.getBoundingClientRect();
+
+        this.setState({ tooltipWidth: tooltipRect.width, tooltipHeight: tooltipRect.height });
     }
 
     static getDerivedStateFromProps(props: TooltipProps, state: TooltipState) {
         const left = props.position.left + (props.position.width / 2) - (state.tooltipWidth / 2);
-        const top = props.position.top - props.position.height - (props.position.height / 2);
+        const top = props.position.top - props.position.height - (state.tooltipHeight / 2);
 
         return { left, top };
     }
@@ -34,6 +37,19 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     }
 
     render() {
-        return <div ref={el => this.tooltipElement = el} className="tooltip" style={{ left: this.state.left, top: this.state.top }}>tooltip</div>;
+        return <div ref={el => this.tooltipElement = el} className="tooltip" style={{ left: this.state.left, top: this.state.top }}>
+            <button>
+                <span className="icon-bold"></span>
+            </button>
+            <button>
+                <span className="icon-italic"></span>
+            </button>
+            <button>
+                <span className="icon-underline"></span>
+            </button>
+            <button>
+                <span className="icon-strikethrough"></span>
+            </button>
+        </div>;
     }
 }

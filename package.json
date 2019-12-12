@@ -4,7 +4,7 @@
   "description": "A modular content editor",
   "main": "index.js",
   "scripts": {
-    "build-dev": "parcel ./demo/index.html",
+    "build-dev": "parcel ./demo/index.html --open",
     "test": "npx jest",
     "linter": "npx eslint 'src/**'"
   },
