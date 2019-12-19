@@ -32,22 +32,32 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
         return { left, top };
     }
 
-    isActive(command: string) {
-        document.queryCommandValue(command);
+    execDocumentCommand(e: React.MouseEvent<HTMLButtonElement>, command: string) {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        document.execCommand(command, false);
+
+        // Force a rerender to make the correct buttons active
+        this.forceUpdate();
+    }
+
+    isActive(command: string): boolean {
+        return document.queryCommandValue(command) === "true";
     }
 
     render() {
         return <div ref={el => this.tooltipElement = el} className="tooltip" style={{ left: this.state.left, top: this.state.top }}>
-            <button>
+            <button className={this.isActive("bold") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "bold")}>
                 <span className="icon-bold"></span>
             </button>
-            <button>
+            <button className={this.isActive("italic") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "italic")}>
                 <span className="icon-italic"></span>
             </button>
-            <button>
+            <button className={this.isActive("underline") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "underline")}>
                 <span className="icon-underline"></span>
             </button>
-            <button>
+            <button className={this.isActive("strikethrough") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "strikethrough")}>
                 <span className="icon-strikethrough"></span>
             </button>
         </div>;

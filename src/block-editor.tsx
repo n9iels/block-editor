@@ -8,6 +8,16 @@ export class BlockEditor extends React.Component<{}, { value: string; position: 
         this.state = { value: "<p>okay1</p><p>okay2</p><p>okay3</p><p>okay4</p>", position: null };
     }
 
+    onSelect(type: "Range" | "Caret", selectedText: string, position: ClientRect) {
+        if (type === "Range") {
+            this.setState({ position });
+        } else {
+            if (selectedText === "") {
+                console.log("empty block");
+            }
+        }
+    }
+
     render() {
         return (
             <div id="block-editor">
@@ -16,10 +26,9 @@ export class BlockEditor extends React.Component<{}, { value: string; position: 
                 <ContentEditable
                     html={this.state.value}
                     onInput={console.log}
-                    onBlur={() => this.setState({ position: null })}
+                    onBlur={() => this.setState({ position: null }, () => console.log("blur"))}
                     onFocus={() => console.log("focus")}
-                    onSelect={(selectedText, position) =>
-                        this.setState({ position })}
+                    onSelect={(type, content, position) => this.onSelect(type, content, position)}
                     onSelectStop={() => this.setState({ position: null })}
                 />
             </div>

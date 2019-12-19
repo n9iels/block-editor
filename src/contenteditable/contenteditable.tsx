@@ -5,19 +5,19 @@ export interface ContentEditableProps {
     html?: string;
     onBlur?: () => void;
     onFocus?: () => void;
-    onSelect?: (selectedText: string, rect: ClientRect) => void;
+    onSelect?: (type: "Caret" | "Range", selectedText: string, selectionRect: ClientRect) => void;
     onSelectStop?: () => void;
     onInput: (value: string) => void;
 }
 
-export interface ContentEditableState { selection: Selection }
+export interface ContentEditableState { isSelecting: Selection }
 
 export class ContentEditable extends React.Component<ContentEditableProps, ContentEditableState> {
     private elementRef: HTMLDivElement;
 
     constructor(props: ContentEditableProps) {
         super(props);
-        this.state = { selection: null };
+        this.state = { isSelecting: null };
     }
 
     componentDidMount() {
@@ -53,15 +53,26 @@ export class ContentEditable extends React.Component<ContentEditableProps, Conte
             return;
         }
 
-        if (this.state.selection && selection.type === "Caret") {
-            this.setState({ selection: null }, () => this.props.onSelectStop && this.props.onSelectStop());
+        if (this.state.isSelecting && selection.type === "Caret") {
+            this.setState({ isSelecting: null }, () => this.props.onSelectStop && this.props.onSelectStop());
+        }
+        
+        if (!this.state.isSelecting && selection.type === "Caret") {
+            let focusElement = range.commonAncestorContainer as HTMLElement;
+
+            // If the selected node is just text we need the parent node to get position
+            if (focusElement.nodeName === "#text") {
+                focusElement = focusElement.parentElement;
+            }
+
+            this.props.onSelect && this.props.onSelect("Caret", focusElement.textContent, focusElement.getClientRects().item(0));
         }
 
         if (selection.type === "Range" && range && range.startOffset <= range.endOffset) {
             const selectedText = selection.toString();
             const clientRects = range.getClientRects();
 
-            this.setState({ selection: selection }, () => this.props.onSelect && this.props.onSelect(selectedText, clientRects.item(0)));
+            this.setState({ isSelecting: selection }, () => this.props.onSelect && this.props.onSelect("Range", selectedText, clientRects.item(0)));
         }
     }
 
@@ -70,8 +81,8 @@ export class ContentEditable extends React.Component<ContentEditableProps, Conte
             "div",
             {
                 onInput: () => this.onInput(),
-                onBlur: () => this.props.onBlur(),
-                onFocus: () => this.props.onFocus(),
+                onBlur: () => this.props.onBlur && this.props.onBlur(),
+                onFocus: () => this.props.onFocus && this.props.onFocus(),
                 onSelect: () => this.onSelect(),
                 ref: (element: HTMLDivElement) => { this.elementRef = element; },
                 suppressContentEditableWarning: true,

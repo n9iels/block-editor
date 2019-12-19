@@ -7,9 +7,15 @@ import { Tooltip, TooltipState, TooltipProps } from "../../src/elements/tooltip"
 configure({ adapter: new Adapter() });
 
 describe("tooltip", () => {
+    let queryCommandValue: jest.Mock<string>;
     let component: ReactWrapper<TooltipProps, TooltipState, Tooltip>;
 
     beforeEach(() => {
+        // Jest does not support document.queryCommandValue, so we have to mock it
+        // eslint-disable-next-line
+        queryCommandValue = jest.fn((commandId) => "True");
+        document.queryCommandValue = queryCommandValue;
+
         component = mount(<Tooltip position={{ bottom: 0, top: 0, left: 0, right: 0, height: 10, width: 40 }} />);
         component.setState({ tooltipWidth: 40, tooltipHeight: 20 });
     });

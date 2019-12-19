@@ -38,21 +38,41 @@ describe("contenteditable", () => {
         expect(component.find("div[contentEditable=true]").exists()).toBeFalsy();
     });
 
-    it("should clear the selection state and call the prop 'onSelectStop' when the selection is cleared", () => {
-        window.getSelection = jest.fn().mockReturnValue({ type: "Caret", getRangeAt: jest.fn });
-        const onSelectStopMock = jest.fn();
-        const onSelectMock = jest.fn();
+    describe("", () => {
+        let mockElement: any;
+        beforeEach(() => {
+            mockElement = jest.fn().mockReturnValue({ nodeName: "", getRangeAt: jest.fn(), getClientRects: jest.fn().mockReturnValue({ item: jest.fn().mockReturnThis() }) });
+            window.getSelection = jest.fn().mockReturnValue({ type: "Caret", getRangeAt: jest.fn().mockReturnValue({ ...mockElement(), commonAncestorContainer: mockElement() }) });
+        });
 
-        component.setProps({ onSelect: onSelectMock, onSelectStop: onSelectStopMock });
-        component.setState({ selection: {} as Selection });
-        component.instance().onSelect();
+        it("should clear the selection state and call the prop 'onSelectStop' when the selection is cleared", () => {
+            const onSelectStopMock = jest.fn();
+            const onSelectMock = jest.fn();
 
-        expect(component.state("selection")).toBe(null);
-        expect(onSelectStopMock).toBeCalledTimes(1);
-        expect(onSelectMock).toBeCalledTimes(0);
+            component.setProps({ onSelect: onSelectMock, onSelectStop: onSelectStopMock });
+            component.setState({ isSelecting: {} as Selection });
+            component.instance().onSelect();
+
+            expect(component.state("isSelecting")).toBe(null);
+            expect(onSelectStopMock).toBeCalledTimes(1);
+            expect(onSelectMock).toBeCalledTimes(1);
+        });
+
+        it("should fire only the 'onSelect' callback when the cursor is moved", () => {
+            const onSelectStopMock = jest.fn();
+            const onSelectMock = jest.fn();
+
+            component.setProps({ onSelect: onSelectMock, onSelectStop: onSelectStopMock });
+            component.setState({ isSelecting: null });
+            component.instance().onSelect();
+
+            expect(component.state("isSelecting")).toBe(null);
+            expect(onSelectStopMock).toBeCalledTimes(0);
+            expect(onSelectMock).toBeCalledTimes(1);
+        });
     });
 
-    it("should set the state 'selection' and call the prop 'onSelect' when a selection is made", () => {
+    it("should set the state 'isSelecting' and call the prop 'onSelect' when a selection is made", () => {
         const onSelectStopMock = jest.fn();
         const onSelectMock = jest.fn();
         const clientRectMock = jest.fn().mockReturnValue({ item: jest.fn().mockReturnValue({ left: 99 }) });
@@ -61,10 +81,10 @@ describe("contenteditable", () => {
         window.getSelection = jest.fn().mockReturnValue({ type: "Range", getRangeAt: getRangeAtMock, toString: () => "selected_text" });
 
         component.setProps({ onSelect: onSelectMock, onSelectStop: onSelectStopMock });
-        component.setState({ selection: null });
+        component.setState({ isSelecting: null });
         component.instance().onSelect();
 
-        expect(onSelectMock).toHaveBeenCalledWith("selected_text", { left: 99 });
+        expect(onSelectMock).toHaveBeenCalledWith("Range", "selected_text", { left: 99 });
         expect(onSelectStopMock).toHaveBeenCalledTimes(0);
     });
 });

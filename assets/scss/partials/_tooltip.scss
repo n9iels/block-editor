@@ -21,5 +21,9 @@
         color: invert($tooltip-background-color);
         font-size: 1rem;
         padding: 0.3em;
+
+        &.active {
+            color: #ff0000;
+        }
     }
 }
