@@ -1,7 +1,9 @@
 @import "vendor/base";
 @import "vendor/icomoon/icomoon";
 
+@import "base/variables";
+
 #block-editor {
-    @import "partials/base";
-    @import "partials/tooltip";
+    @import "components/tooltip";
+    @import "components/contenteditable";
 }

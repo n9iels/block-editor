@@ -3,6 +3,7 @@
     border-radius: 0.2rem;
     background-color: $tooltip-background-color;
     color: invert($tooltip-background-color);
+    margin-top: -0.5rem;
 
     &::after {
         content: '';
@@ -20,7 +21,8 @@
         border: 0;
         color: invert($tooltip-background-color);
         font-size: 1rem;
-        padding: 0.3em;
+        padding: 0.5em;
+        cursor: pointer;
 
         &.active {
             color: #ff0000;

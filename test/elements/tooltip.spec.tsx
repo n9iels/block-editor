@@ -16,11 +16,21 @@ describe("tooltip", () => {
         queryCommandValue = jest.fn((commandId) => "True");
         document.queryCommandValue = queryCommandValue;
 
-        component = mount(<Tooltip position={{ bottom: 0, top: 0, left: 0, right: 0, height: 10, width: 40 }} />);
-        component.setState({ tooltipWidth: 40, tooltipHeight: 20 });
+        component = mount(<Tooltip selectionPosition={{ bottom: 0, top: 0, left: 0, right: 0, height: 10, width: 40 }} />);
+        component.setState({ tooltipWidth: 30, tooltipHeight: 20 });
     });
 
     it("should render at the center point of the given position", () => {
+        component.setProps({ selectionPosition: { ...component.prop("selectionPosition"), left: 10, right:31 } });
+
+        expect(component.state("left")).toBe(15);
+        expect(component.state("top")).toBe(-20);
+        expect(component.find("div.tooltip").props().style).toStrictEqual({ left: 15, top: -20 });
+    });
+
+    it("should render at the far left if the tooltip does not fit on the screen", () => {
+        component.setProps({ selectionPosition: { ...component.prop("selectionPosition"), left: 20, right: 29 } });
+
         expect(component.state("left")).toBe(0);
         expect(component.state("top")).toBe(-20);
         expect(component.find("div.tooltip").props().style).toStrictEqual({ left: 0, top: -20 });
@@ -30,8 +40,8 @@ describe("tooltip", () => {
         expect(component.state("left")).toBe(0);
         expect(component.state("top")).toBe(-20);
 
-        component.setProps({ position: { bottom: 0, top: 10, left: -20, right: 0, height: 10, width: 40 } });
-        expect(component.state("left")).toBe(-20);
-        expect(component.state("top")).toBe(-10);
+        component.setProps({ selectionPosition: { ...component.prop("selectionPosition"), left: 50, right: 60 } });
+        expect(component.state("left")).toBe(55);
+        expect(component.state("top")).toBe(-20);
     });
 });

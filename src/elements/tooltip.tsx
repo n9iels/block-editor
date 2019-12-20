@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export interface TooltipProps {
-    position: ClientRect;
+    selectionPosition: ClientRect;
 }
 
 export interface TooltipState {
@@ -26,8 +26,12 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     }
 
     static getDerivedStateFromProps(props: TooltipProps, state: TooltipState) {
-        const left = props.position.left + (props.position.width / 2) - (state.tooltipWidth / 2);
-        const top = props.position.top - props.position.height - (state.tooltipHeight / 2);
+        const top = props.selectionPosition.top - props.selectionPosition.height - (state.tooltipHeight / 2);
+        let left = props.selectionPosition.left + (props.selectionPosition.width / 2) - (state.tooltipWidth / 2);
+
+        if (props.selectionPosition.right <= state.tooltipWidth) {
+            left = 0;
+        }
 
         return { left, top };
     }
@@ -35,7 +39,11 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
     execDocumentCommand(e: React.MouseEvent<HTMLButtonElement>, command: string) {
         e.stopPropagation();
         e.preventDefault();
-        
+
+        if (e.button !== 0) {
+            return;
+        }
+
         document.execCommand(command, false);
 
         // Force a rerender to make the correct buttons active

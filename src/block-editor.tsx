@@ -21,7 +21,7 @@ export class BlockEditor extends React.Component<{}, { value: string; position: 
     render() {
         return (
             <div id="block-editor">
-                {this.state.position && <Tooltip position={this.state.position} />}
+                {this.state.position && <Tooltip selectionPosition={this.state.position} />}
 
                 <ContentEditable
                     html={this.state.value}
