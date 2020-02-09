@@ -1,4 +1,5 @@
 import * as React from "react";
+import { documentEditorUtils } from "../util/document-editor-utils";
 
 export interface TooltipProps {
     selectionPosition: ClientRect;
@@ -36,37 +37,45 @@ export class Tooltip extends React.Component<TooltipProps, TooltipState> {
         return { left, top };
     }
 
-    execDocumentCommand(e: React.MouseEvent<HTMLButtonElement>, command: string) {
+    execDocumentCommand(e: React.MouseEvent<HTMLButtonElement>, command: string, value: string = null) {
         e.stopPropagation();
         e.preventDefault();
 
+        // only execute if the left mouse button is clicked
         if (e.button !== 0) {
             return;
         }
 
-        document.execCommand(command, false);
+        if (command === "formatBlock") {
+            documentEditorUtils.toggleBlockType(value);
+        } else {
+            documentEditorUtils.execCommand(command, value);
+        }
 
         // Force a rerender to make the correct buttons active
         this.forceUpdate();
     }
 
-    isActive(command: string): boolean {
-        return document.queryCommandValue(command) === "true";
+    isActive(command: string, expectedValue: string): boolean {
+        return documentEditorUtils.currentActiveCommand(command) === expectedValue;
     }
 
     render() {
         return <div ref={el => this.tooltipElement = el} className="tooltip" style={{ left: this.state.left, top: this.state.top }}>
-            <button className={this.isActive("bold") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "bold")}>
+            <button className={this.isActive("bold", "true") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "bold")}>
                 <span className="icon-bold"></span>
             </button>
-            <button className={this.isActive("italic") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "italic")}>
+            <button className={this.isActive("italic", "true") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "italic")}>
                 <span className="icon-italic"></span>
             </button>
-            <button className={this.isActive("underline") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "underline")}>
+            <button className={this.isActive("underline", "true") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "underline")}>
                 <span className="icon-underline"></span>
             </button>
-            <button className={this.isActive("strikethrough") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "strikethrough")}>
+            <button className={this.isActive("strikethrough", "true") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "strikethrough")}>
                 <span className="icon-strikethrough"></span>
+            </button>
+            <button className={this.isActive("formatBlock", "h2") ? "active" : ""} onMouseDown={e => this.execDocumentCommand(e, "formatBlock", "h2")}>
+                <span className="icon-font-size"></span>
             </button>
         </div>;
     }

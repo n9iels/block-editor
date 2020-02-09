@@ -4,6 +4,15 @@
 @import "base/variables";
 
 #block-editor {
-    @import "components/tooltip";
-    @import "components/contenteditable";
+  @import "components/tooltip";
+  @import "components/contenteditable";
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+      font-weight: normal;
+  }
 }
