@@ -10,14 +10,14 @@ export interface ContentEditableProps {
     onInput: (value: string) => void;
 }
 
-export interface ContentEditableState { isSelecting: Selection }
+export interface ContentEditableState { textRangeHasBeenSelected: boolean }
 
 export class ContentEditable extends React.Component<ContentEditableProps, ContentEditableState> {
     private elementRef: HTMLDivElement;
 
     constructor(props: ContentEditableProps) {
         super(props);
-        this.state = { isSelecting: null };
+        this.state = { textRangeHasBeenSelected: false };
     }
 
     componentDidMount() {
@@ -43,6 +43,11 @@ export class ContentEditable extends React.Component<ContentEditableProps, Conte
 
     onInput() {
         this.props.onInput(this.elementRef.innerHTML);
+
+        // The change in input might cause the current selected elements to be moved.
+        if (this.state.textRangeHasBeenSelected) {
+            this.onSelect();
+        }
     }
 
     onSelect() {
@@ -53,14 +58,15 @@ export class ContentEditable extends React.Component<ContentEditableProps, Conte
             return;
         }
 
-        if (this.state.isSelecting && selection.type === "Caret") {
-            this.setState({ isSelecting: null }, () => this.props.onSelectStop && this.props.onSelectStop());
+        // Stop the selection if there is a click elsewhere in the document
+        if (this.state.textRangeHasBeenSelected && selection.type === "Caret") {
+            this.setState({ textRangeHasBeenSelected: false }, () => this.props.onSelectStop && this.props.onSelectStop());
         }
         
-        if (!this.state.isSelecting && selection.type === "Caret") {
+        if (!this.state.textRangeHasBeenSelected && selection.type === "Caret") {
             let focusElement = range.commonAncestorContainer as HTMLElement;
 
-            // If the selected node is just text we need the parent node to get position
+            // If the selected node is just text we need the parent node to get a cursor position
             if (focusElement.nodeName === "#text") {
                 focusElement = focusElement.parentElement;
             }
@@ -72,7 +78,7 @@ export class ContentEditable extends React.Component<ContentEditableProps, Conte
             const selectedText = selection.toString();
             const clientRects = range.getClientRects();
 
-            this.setState({ isSelecting: selection }, () => this.props.onSelect && this.props.onSelect("Range", selectedText, clientRects.item(0)));
+            this.setState({ textRangeHasBeenSelected: true }, () => this.props.onSelect && this.props.onSelect("Range", selectedText, clientRects.item(0)));
         }
     }
 

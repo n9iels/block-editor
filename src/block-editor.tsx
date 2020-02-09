@@ -13,7 +13,7 @@ export class BlockEditor extends React.Component<{}, { value: string; position: 
             this.setState({ position });
         } else {
             if (selectedText === "") {
-                console.log("empty block");
+                console.log("empty block, insert utils here", position);
             }
         }
     }
